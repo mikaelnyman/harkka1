@@ -5,6 +5,9 @@ public class SummausSaie extends Thread {
 		// TODO Auto-generated constructor stub
 	}
 
+	public void run(){
+		// TODO Toteuta!
+	}
 	
 
 }
