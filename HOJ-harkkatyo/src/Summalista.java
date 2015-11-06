@@ -1,4 +1,4 @@
-
+import java.util.*;
 public class Summalista 
 {
 	//Tietokent‰t
@@ -25,12 +25,12 @@ public class Summalista
 	}
 	
 	//Metodi palauttaa listassa olevan summan ja sinne
-	// lis‰ttyjen lukujen lukum‰‰r‰n list-oliossa.
+	// lis‰ttyjen lukujen lukum‰‰r‰n ArrayList-oliossa.
 	//Palautettavan listan ensimm‰inen alkio on alkioiden
-	//summa ja toinen alkio on alkioiden lukum‰‰r‰.s
-	Public List<Int> GetSisalto()
+	//summa ja toinen alkio on alkioiden lukum‰‰r‰.
+	public ArrayList<Integer> GetSisalto()
 	{
-		java.util.List<Int> Arvot = new List<Int>;
+		ArrayList<Integer> Arvot = new ArrayList<Integer>(2);
 		Arvot.add(this.summa);
 		Arvot.add(this.alkiot);
 		return Arvot;
