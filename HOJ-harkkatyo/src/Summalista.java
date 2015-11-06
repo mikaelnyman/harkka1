@@ -28,11 +28,9 @@ public class Summalista
 	// lis‰ttyjen lukujen lukum‰‰r‰n ArrayList-oliossa.
 	//Palautettavan listan ensimm‰inen alkio on alkioiden
 	//summa ja toinen alkio on alkioiden lukum‰‰r‰.
-	public ArrayList<Integer> GetSisalto()
+	public int[] GetSisalto()
 	{
-		ArrayList<Integer> Arvot = new ArrayList<Integer>(2);
-		Arvot.add(this.summa);
-		Arvot.add(this.alkiot);
+		int[] Arvot = {this.summa,this.alkiot};
 		return Arvot;
 	}
 
