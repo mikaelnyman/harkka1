@@ -25,7 +25,7 @@ public class Summalista
 	}
 	
 	//Metodi palauttaa listassa olevan summan ja sinne
-	// lis‰ttyjen lukujen lukum‰‰r‰n ArrayList-oliossa.
+	// lis‰ttyjen lukujen lukum‰‰r‰n Int[]-oliossa.
 	//Palautettavan listan ensimm‰inen alkio on alkioiden
 	//summa ja toinen alkio on alkioiden lukum‰‰r‰.
 	public int[] GetSisalto()
