@@ -1,16 +1,13 @@
-import java.util.*;
+
 public class Summalista 
 {
 	//Tietokent‰t
-	private String nimi = "";
 	private int summa = 0;
 	private int alkiot = 0;
 	
 	//Konstruktori, joka luo uuden Summalista-olion.
-	//Parametrina annetaan Summalistan nimi.
-	public Summalista(String y)
+	public Summalista()
 	{
-		this.nimi = y;
 		this.summa = 0;
 		this.alkiot = 0;
 	}
@@ -18,7 +15,7 @@ public class Summalista
 	//Metodi lis‰‰ parametrina annetun int tyypin luvun
 	// listassa olevaan summaan ja kasvattaa lis‰ttyjen
 	// lukujen lukum‰‰r‰‰ yhdell‰.
-	public void SetUusiluku (int x)
+	public void setUusiluku(int x)
 	{
 		this.summa = summa+x;
 		this.alkiot = alkiot+1;
@@ -28,7 +25,7 @@ public class Summalista
 	// lis‰ttyjen lukujen lukum‰‰r‰n ArrayList-oliossa.
 	//Palautettavan listan ensimm‰inen alkio on alkioiden
 	//summa ja toinen alkio on alkioiden lukum‰‰r‰.
-	public int[] GetSisalto()
+	public int[] getSisalto()
 	{
 		int[] Arvot = {this.summa,this.alkiot};
 		return Arvot;
