@@ -1,10 +1,13 @@
-
 public class Testi {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("Moi");
-		System.out.println("töttöröö");
+		try {
+			WorkDistributor.main(new String[]{"verbose"});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		SummausPalvelin.main(null);
 	}
 
 }
