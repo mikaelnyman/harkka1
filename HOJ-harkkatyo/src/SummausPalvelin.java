@@ -1,3 +1,10 @@
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
 public class SummausPalvelin {
 	/*
 	 * Koko palvelimen toiminnallinen runko
@@ -120,10 +127,26 @@ public class SummausPalvelin {
 	}
 
 	/*
-	 * Muodostaa UDP-yhteyden palvelimeen ja antaa sille portin, johon palvelimen pit‰‰ ottaa TCP-yhteys
-	 * 
+	 * Muodostaa UDP-yhteyden palvelimeen ja
+	 * antaa sille portin, johon palvelimen pit‰‰ ottaa TCP-yhteys
 	 */
 	private static void muodostaUDP(int yPortti, int zPortti){
-
+		try {
+			DatagramSocket udp=new DatagramSocket(zPortti);
+			byte[] tavu=new byte[]{(byte) zPortti};
+			InetAddress omaIP=InetAddress.getLocalHost();
+			DatagramPacket paketti=new DatagramPacket(tavu, tavu.length, omaIP, yPortti);
+			udp.send(paketti);
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }
