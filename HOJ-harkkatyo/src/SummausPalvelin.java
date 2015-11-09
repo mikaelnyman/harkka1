@@ -8,7 +8,7 @@ public class SummausPalvelin {
 		//Keksitty porttinumero, johon palvelin Y muodostaa TCP-yhteyden
 		final int zPortti=2000;
 		//Y:ltä saatava Summausäikeiden lukumäärä
-		Summalista[] sl=null;
+		Summalista[] summaTaulukko=null;
 		// Lista, jossa summauspalvelijat ovat
 		SummausSaie[] ss=null;
 		int t=0;
@@ -20,35 +20,34 @@ public class SummausPalvelin {
 			try {
 				Thread.sleep(1000L);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			long aika=System.currentTimeMillis();
 
 			while(true){
-				if(kuunteleTCP()) break; // Jatka eteenpäin 
+				if(kuunteleTCPMuodostus()) break; // Jatkaa eteenpäin 
 				if(System.currentTimeMillis()-aika>5000L){ //Odotetaan max 5 sec
 					continue leima1;	// Uusi yritys
 				}
 			}
-			//TODO TCP-oliolta saadaan muuttujalle t arvo
-			luoSumausPalvelijat(t, sl, ss);
+			t=kuunteleLuku();
+			luoSumausPalvelijat(t, summaTaulukko, ss);
 			lahetaPortit();
 			while(true){
-				int a=kuuntele();
+				int a=kuunteleLuku();
 				if(a==1){		// Kokonaissumma
 					int b=0;
-					for(Summalista s : sl){
+					for(Summalista s : summaTaulukko){
 						b+=s.getSisalto()[0];
 					}
 					// TODO Lähetä b Y:lle
 				}
 				else if(a==2){  // Säie, jolla suurin summa
 					int c=0;
-					int b=sl[0].getSisalto()[0];
+					int b=summaTaulukko[0].getSisalto()[0];
 					for(int j=1; j<t; j++){
-						if(sl[j].getSisalto()[0]>b){
-							b=sl[j].getSisalto()[0];
+						if(summaTaulukko[j].getSisalto()[0]>b){
+							b=summaTaulukko[j].getSisalto()[0];
 							c=j;
 						}
 					}
@@ -56,7 +55,7 @@ public class SummausPalvelin {
 				}
 				else if(a==3){  // Kokonaismäärä
 					int b=0;
-					for(Summalista s : sl){
+					for(Summalista s : summaTaulukko){
 						b+=s.getSisalto()[1];
 					}
 					// TODO Lähetä b Y:lle
@@ -71,14 +70,18 @@ public class SummausPalvelin {
 		System.exit(-1);
 	}
 	
-	
+	/*
+	 * Sulkee koko ohjelman, myös SummausSäikeet
+	 */
 	private static void lopetaKokoPaska() {
 		// TODO Auto-generated method stub
 		
 	}
 
-
-	private static int kuuntele() {
+	/*
+	 * Kuuntelee ja palauttaa kokonaisluvun TCP-yhteyden kautta
+	 */
+	private static int kuunteleLuku() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -110,7 +113,7 @@ public class SummausPalvelin {
 	 * 
 	 * @return true, jos yhteys onnistui, false, jos ei
 	 */
-	private static boolean kuunteleTCP() {
+	private static boolean kuunteleTCPMuodostus() {
 		boolean b=false;
 		// TODO runko
 		return b;
