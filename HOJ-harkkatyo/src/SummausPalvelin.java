@@ -24,7 +24,7 @@ public class SummausPalvelin {
 		leima1 : while (i<5){
 			i++;
 			muodostaUDP(yPortti, zPortti);
-			try {
+			try {							// Odotetaan 1 sec
 				Thread.sleep(1000L);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -137,6 +137,7 @@ public class SummausPalvelin {
 			InetAddress omaIP=InetAddress.getLocalHost();
 			DatagramPacket paketti=new DatagramPacket(tavu, tavu.length, omaIP, yPortti);
 			udp.send(paketti);
+			udp.close();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
