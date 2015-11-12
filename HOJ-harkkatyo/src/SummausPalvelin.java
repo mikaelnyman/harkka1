@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -18,6 +20,7 @@ public class SummausPalvelin {
 		Summalista[] summaTaulukko=null;
 		// Lista, jossa summauspalvelijat ovat
 		SummausSaie[] ss=null;
+		Socket asiakasSoketti=null;
 		int t=0;
 
 		int i=0;
@@ -29,19 +32,12 @@ public class SummausPalvelin {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			long aika=System.currentTimeMillis();
-
-			while(true){
-				if(kuunteleTCPMuodostus()) break; // Jatkaa eteenpäin 
-				if(System.currentTimeMillis()-aika>5000L){ //Odotetaan max 5 sec
-					continue leima1;	// Uusi yritys
-				}
-			}
-			t=kuunteleLuku();
+			asiakasSoketti=kuunteleTCPMuodostus(zPortti);
+			t=kuunteleLuku(asiakasSoketti);
 			luoSumausPalvelijat(t, summaTaulukko, ss);
 			lahetaPortit();
 			while(true){
-				int a=kuunteleLuku();
+				int a=kuunteleLuku(asiakasSoketti);
 				if(a==1){		// Kokonaissumma
 					int b=0;
 					for(Summalista s : summaTaulukko){
@@ -88,8 +84,8 @@ public class SummausPalvelin {
 	/*
 	 * Kuuntelee ja palauttaa kokonaisluvun TCP-yhteyden kautta
 	 */
-	private static int kuunteleLuku() {
-		// TODO Auto-generated method stub
+	private static int kuunteleLuku(Socket soketti) {
+		
 		return 0;
 	}
 
@@ -120,10 +116,16 @@ public class SummausPalvelin {
 	 * 
 	 * @return true, jos yhteys onnistui, false, jos ei
 	 */
-	private static boolean kuunteleTCPMuodostus() {
-		boolean b=false;
-		// TODO runko
-		return b;
+	private static Socket kuunteleTCPMuodostus(int portti) {
+		try {
+			ServerSocket soketti=new ServerSocket(portti);
+			Socket asiakasSoketti=soketti.accept();
+			return asiakasSoketti;
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return null;
 	}
 
 	/*
