@@ -1,3 +1,9 @@
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 public class SummausSaie extends Thread {
 	/*
 	 * Tietokentät
@@ -5,6 +11,10 @@ public class SummausSaie extends Thread {
 	//TODO soketit, ObjektInput(Output)Stream
 	private Summalista luvut;
 	private int portti;
+	private Socket lukuportti = null;
+	private ObjectInputStream lukuVirta = null;
+	private int luku;
+	
 	
 	public SummausSaie(Summalista lista, int portti) {
 		this.luvut=lista;
@@ -22,8 +32,17 @@ public class SummausSaie extends Thread {
 	}
 
 	private int kuunteleLuku() {
-		// TODO voi kopioida summauspalvelimesta
-		return 0;
+			try {
+				ServerSocket soketti=new ServerSocket(portti);
+				lukuportti=soketti.accept();
+				soketti.close();
+				lukuVirta=new ObjectInputStream(lukuportti.getInputStream());
+				luku=(int)lukuVirta.readInt();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return luku;
 	}
 
 }
