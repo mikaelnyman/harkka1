@@ -10,52 +10,69 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-public class SummausPalvelin {
+public class SummausPalvelin extends Thread {
+	/*
+	 * Tietokent‰t
+	 */
+	//Portti, johon muodostetaan UDP. Annettu teht‰v‰nannossa.
+	private final int yPortti=3126;
+	//Keksitty porttinumero, johon palvelin Y muodostaa TCP-yhteyden
+	private final int zPortti=2000;
+	//Y:lt‰ saatava Summaus‰ikeiden lukum‰‰r‰
+	private Summalista[] summaTaulukko=null;
+	// Lista, jossa summauspalvelijat ovat
+	private SummausSaie[] ss=null;
+	private Socket asiakasSoketti=null;
+	private ObjectOutputStream oVirta=null;
+	private ObjectInputStream iVirta=null;
+	private int t=0;
+	
+	/*
+	 * Konstruktori
+	 */
+	public SummausPalvelin(){
+		
+	}
+	
 	/*
 	 * Koko palvelimen toiminnallinen runko
 	 */
-	public static void main(String...strings ){
-		//Portti, johon muodostetaan UDP. Annettu teht‰v‰nannossa.
-		final int yPortti=3126;
-		//Keksitty porttinumero, johon palvelin Y muodostaa TCP-yhteyden
-		final int zPortti=2000;
-		//Y:lt‰ saatava Summaus‰ikeiden lukum‰‰r‰
-		Summalista[] summaTaulukko=null;
-		// Lista, jossa summauspalvelijat ovat
-		SummausSaie[] ss=null;
-		Socket asiakasSoketti=null;
-		ObjectOutputStream oVirta=null;
-		ObjectInputStream iVirta=null;
-		int t=0;
-
+	public void run(){
 		int i=0;
 		leima1 : while (i<5){ //yritet‰‰n viisi kertaa
 			i++;
-			muodostaUDP(yPortti, zPortti);
+			muodostaUDP();
 			try {							// Odotetaan 1 sec
 				Thread.sleep(1000L);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			try {
-				asiakasSoketti=kuunteleTCPMuodostus(zPortti, oVirta, iVirta);
+				kuunteleTCPMuodostus();
 			} catch (SocketException e) {
 				continue leima1; // aikaraja meni, yritet‰‰n uudelleen, jos viel‰ kertoja j‰ljell‰
 			}
-			t=kuunteleLuku(asiakasSoketti, oVirta, iVirta, 5000, 2, 10);
-			if (t==-1){ //ei tullut oikeaa lukua oikeassa ajassa
-				//TODO Y:lle -1 ja hallittu lopetus t‰lle sovellukselle
+			while(t<2 || t>10){
+				//TODO oikea viiden sekunnin aikaraja
+				t=kuunteleLuku(5000); //Y:n pit‰isi l‰hett‰‰ palvelijoiden lukum‰‰r‰
+				if (t==-1){ //ei tullut oikeaa lukua oikeassa ajassa
+					lahetaLuku(-1); //Y:lle -1
+					lopetaKokoPaska(); // Hallittu lopetus
+				}
 			}
-			luoSummausPalvelijat(t, summaTaulukko, ss);
-			lahetaPortit();
+			System.out.println("Palvelijoiden lukum‰‰r‰ "+t);
+			luoSummausPalvelijat();
+			for (int p=2001;p<2001+t;p++){ //Porttien l‰hetys Y:lle
+				lahetaLuku(p);
+			}
 			while(true){
-				int a=kuunteleLuku(asiakasSoketti, oVirta, iVirta, 10000, 0, 3);
+				int a=kuunteleLuku(10000); //Y:n kysely
 				if(a==1){		// Kokonaissumma
-					int b=0;
+					int b=0; //v‰lisuumma, johon lis‰t‰‰n jokaisen s‰ikeen summa
 					for(Summalista s : summaTaulukko){
 						b+=s.getSisalto()[0];
 					}
-					// TODO L‰het‰ b Y:lle
+					lahetaLuku(b);
 				}
 				else if(a==2){  // S‰ie, jolla suurin summa
 					int c=0;
@@ -66,17 +83,20 @@ public class SummausPalvelin {
 							c=j;
 						}
 					}
-					// TODO L‰het‰ i Y:lle (tai i:nnen s‰ikeen nimi?)
+					lahetaLuku(c); //Y:lle s‰ikeen indeksi
 				}
 				else if(a==3){  // Kokonaism‰‰r‰
 					int b=0;
 					for(Summalista s : summaTaulukko){
 						b+=s.getSisalto()[1];
 					}
-					// TODO L‰het‰ b Y:lle
+					lahetaLuku(b);
 				}
-				else if(a==0 || a== -1){
+				else if(a==0 || a==-1){
 					lopetaKokoPaska();
+				}
+				else{
+					lahetaLuku(-1); //Jos luku on joku muu, Y:lle -1
 				}
 			}
 		}
@@ -85,94 +105,16 @@ public class SummausPalvelin {
 	}
 	
 	/*
-	 * Sulkee koko ohjelman, myˆs SummausS‰ikeet
-	 */
-	private static void lopetaKokoPaska() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/*
-	 * Kuuntelee ja palauttaa TCP-yhteyden kautta saadun kokonaisluvun.
-	 * Jos aikarajan kuluessa ei tule kokonaislukua annetulta v‰lilt‰ p‰‰tepisteet mukaan lukien,
-	 * palautetaan -1.
-	 */
-	private static int kuunteleLuku(Socket soketti, ObjectOutputStream oVirta, ObjectInputStream iVirta, int aikaraja, int minimi, int maksimi) {
-		int luku=-1;
-		try {
-			soketti.setSoTimeout(aikaraja);
-			while (!(minimi<=luku && maksimi>=luku)) {
-				luku=(int)iVirta.readInt();
-			}
-		} catch (SocketTimeoutException e1){ //Aika loppu
-			return -1;
-		}
-		catch (IOException e) { //Odottematon virhe, mit‰ tehd‰?
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//TODO oliovirrat ja niiden k‰sittely
-		return luku;
-	}
-
-
-	/*
-	 * Luo t kappaletta Summauspalvelijoita ja jokaista palvelijaa kohdin summalistan
-	 * Kaikkien summalista on yhteisen summalistataulukon alkio
-	 * Portit ovat 2001...2001+t
-	 */
-	private static void luoSummausPalvelijat(int t, Summalista[] sl, SummausSaie[] ss) {
-		// Jokaisella palvelijalla on summalista, joka on samalla listan sl alkio
-		sl=new Summalista[t];
-		for(int i=0; i<t; i++){
-			sl[i]=new Summalista();
-			ss[i]=new SummausSaie(sl[i], 2001+i);
-			ss[i].start(); //Portit ovat 2001...2000+t
-		}		
-	}
-	
-	/*
-	 * L‰hett‰‰ palvelijoiden porttinumerot 2001...2001+t Y:lle
-	 */
-	private static void lahetaPortit() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/*
-	 * Muodostaa Socket-olion ja palauttaa sen, jos tulee parametrina annettuun porttiin
-	 * TCP-yhteydenotto
-	 * @throws SocketEception jos viiden sekunnin aikana ei tule pyyntˆ‰
-	 * @return Kuunneltu asiakassoketti
-	 */
-	private static Socket kuunteleTCPMuodostus(int portti, ObjectOutputStream oVirta, ObjectInputStream iVirta) throws SocketException {
-		try {
-			ServerSocket soketti=new ServerSocket(portti);
-			soketti.setSoTimeout(5000);
-			Socket asiakasSoketti=soketti.accept();
-			soketti.close();
-			oVirta=new ObjectOutputStream(asiakasSoketti.getOutputStream());
-			iVirta=new ObjectInputStream(asiakasSoketti.getInputStream());
-			return asiakasSoketti;
-		} 
-		catch (SocketException s){
-			throw new SocketException("Aikaraja meni jo");
-		}
-		catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		return null;
-	}
-
-	/*
 	 * Muodostaa UDP-yhteyden palvelimeen ja
 	 * antaa sille portin, johon palvelimen pit‰‰ ottaa TCP-yhteys
 	 */
-	private static void muodostaUDP(int yPortti, int zPortti){
+	private void muodostaUDP(){
 		try {
-			DatagramSocket udp=new DatagramSocket(zPortti);
-			byte[] tavu=new byte[]{(byte) zPortti};
+			DatagramSocket udp=new DatagramSocket();
+			byte[] tavu=(""+zPortti).getBytes();
+			for (byte b : tavu){
+				System.out.println("Tavu on "+b);
+			}
 			InetAddress omaIP=InetAddress.getLocalHost();
 			DatagramPacket paketti=new DatagramPacket(tavu, tavu.length, omaIP, yPortti);
 			udp.send(paketti);
@@ -188,5 +130,102 @@ public class SummausPalvelin {
 			e.printStackTrace();
 		}
 		
+	}
+
+	/*
+	 * Luo t kappaletta Summauspalvelijoita ja jokaista palvelijaa kohdin summalistan
+	 * Kaikkien summalista on yhteisen summalistataulukon alkio
+	 * Portit ovat 2001...2001+t
+	 */
+	private void luoSummausPalvelijat() {
+		// Jokaisella palvelijalla on summalista, joka on samalla listan summaTaulukko alkio
+		summaTaulukko=new Summalista[t];
+		ss=new SummausSaie[t];
+		for(int i=0; i<t; i++){
+			summaTaulukko[i]=new Summalista();
+			ss[i]=new SummausSaie(summaTaulukko[i], 2001+i);
+			ss[i].start(); //Portit ovat 2001...2000+t
+		}		
+	}
+
+	/*
+	 * Muodostaa Socket-olion ja , jos tulee parametrina annettuun porttiin
+	 * TCP-yhteydenotto
+	 * @throws SocketEception jos viiden sekunnin aikana ei tule pyyntˆ‰
+	 */
+	private void kuunteleTCPMuodostus() throws SocketException {
+		try {
+			ServerSocket soketti=new ServerSocket(zPortti);
+			soketti.setSoTimeout(5000);
+			asiakasSoketti=soketti.accept();
+			soketti.close();
+			oVirta=new ObjectOutputStream(asiakasSoketti.getOutputStream());
+			iVirta=new ObjectInputStream(asiakasSoketti.getInputStream());
+		} 
+		catch (SocketException s){
+			throw new SocketException("Aikaraja meni jo");
+		}
+		catch (IOException e1) {
+			// TODO mit‰ tapahtuu
+			e1.printStackTrace();
+		}
+	}
+
+	/*
+	 * Kuuntelee ja palauttaa TCP-yhteyden kautta saadun kokonaisluvun.
+	 * Jos aikarajan kuluessa ei tule kokonaislukua palautetaan -1.
+	 */
+	private int kuunteleLuku(int aikaraja) {
+		int luku=-1;
+		try {
+			asiakasSoketti.setSoTimeout(aikaraja);
+			luku=(int)iVirta.readInt();
+		}
+		catch (SocketTimeoutException e1){ //Aika loppu
+			return luku;
+		}
+		catch (IOException e) { //Odottematon virhe, mit‰ tehd‰?
+			// TODO ratkaisu
+			e.printStackTrace();
+		}
+		return luku;
+	}
+
+
+	/*
+	 * L‰hett‰‰ kokonaisluvun Y:lle.
+	 * K‰ytt‰‰ TCP-yhteytt‰
+	 * @param l‰hetett‰v‰ kokonaisluku luku
+	 */
+	private void lahetaLuku(int luku) {
+		try {
+			oVirta.writeInt(luku);
+			oVirta.flush();
+		} catch (IOException e) {
+			// TODO Mik‰ on ongelma? Mik‰ ratkaisu?
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * Sulkee koko ohjelman.
+	 * Myˆs SummausS‰ikeet, jos niit‰ on viel‰ elossa
+	 */
+	private void lopetaKokoPaska() {
+		if (!(ss==null)){ 		//Mit‰ jos s‰ikeet demoneita, jotka kuolisivat automaattisesti?
+			for (SummausSaie s : ss){
+				if (s.isAlive()){ 
+				// TODO sulje s‰ie
+				}
+			}
+		}
+		try{
+			oVirta.close();
+			iVirta.close();
+			asiakasSoketti.close();
+		} catch (IOException e){
+			//TODO mit‰ tehd‰
+		}
+		System.exit(0);		
 	}
 }

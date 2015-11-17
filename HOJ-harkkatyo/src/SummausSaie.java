@@ -1,4 +1,8 @@
 public class SummausSaie extends Thread {
+	/*
+	 * Tietokentät
+	 */
+	//TODO soketit, ObjektInput(Output)Stream
 	private Summalista luvut;
 	private int portti;
 	
@@ -7,18 +11,18 @@ public class SummausSaie extends Thread {
 		this.portti=portti;
 	}
 
-	public void start(){
+	public void run(){
 		while(true){
 			int a=kuunteleLuku();
 			if(a==0){
-				//lopeta säie
+				return;//lopeta säie
 			}
 			luvut.setUusiluku(a);
 		}
 	}
 
 	private int kuunteleLuku() {
-		// TODO Auto-generated method stub
+		// TODO voi kopioida summauspalvelimesta
 		return 0;
 	}
 
