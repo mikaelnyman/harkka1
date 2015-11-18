@@ -22,6 +22,15 @@ public class SummausSaie extends Thread {
 	}
 
 	public void run(){
+		try {
+			ServerSocket soketti=new ServerSocket(portti);
+			lukuportti=soketti.accept();
+			soketti.close();
+			lukuVirta=new ObjectInputStream(lukuportti.getInputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		while(true){
 			int a=kuunteleLuku();
 			if(a==0){
@@ -33,10 +42,6 @@ public class SummausSaie extends Thread {
 
 	private int kuunteleLuku() {
 			try {
-				ServerSocket soketti=new ServerSocket(portti);
-				lukuportti=soketti.accept();
-				soketti.close();
-				lukuVirta=new ObjectInputStream(lukuportti.getInputStream());
 				luku=(int)lukuVirta.readInt();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

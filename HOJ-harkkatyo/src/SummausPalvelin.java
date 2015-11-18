@@ -75,6 +75,8 @@ public class SummausPalvelin extends Thread {
 					lahetaLuku(b);
 				}
 				else if(a==2){  // S‰ie, jolla suurin summa
+					System.out.println("Kysyt‰‰n s‰ijett‰, jolla suurin summa.");
+					tulosta();
 					int c=0;
 					int b=summaTaulukko[0].getSisalto()[0];
 					for(int j=1; j<t; j++){
@@ -83,7 +85,8 @@ public class SummausPalvelin extends Thread {
 							c=j;
 						}
 					}
-					lahetaLuku(c); //Y:lle s‰ikeen indeksi
+					System.out.println("S‰ije "+(c+1));
+					lahetaLuku(c+1); //Y:lle s‰ikeen indeksi+1
 				}
 				else if(a==3){  // Kokonaism‰‰r‰
 					int b=0;
@@ -227,5 +230,15 @@ public class SummausPalvelin extends Thread {
 			//TODO mit‰ tehd‰
 		}
 		System.exit(0);		
+	}
+	
+	/*
+	 * Tulostaa tilantaan
+	 */
+	public void tulosta(){
+		for (int i=0;i<t;i++){
+			System.out.println("Summa: "+summaTaulukko[i].getSisalto()[0]);
+			System.out.println("Lukum‰‰r‰: "+summaTaulukko[i].getSisalto()[1]);
+		}
 	}
 }
