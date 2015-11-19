@@ -25,6 +25,7 @@ public class SummausPalvelin extends Thread {
 	private Socket asiakasSoketti=null;
 	private ObjectOutputStream oVirta=null;
 	private ObjectInputStream iVirta=null;
+	// Y:lt‰ saatava s‰ikeiden lukum‰‰r‰
 	private int t=0;
 	
 	/*
@@ -115,9 +116,9 @@ public class SummausPalvelin extends Thread {
 		try {
 			DatagramSocket udp=new DatagramSocket();
 			byte[] tavu=(""+zPortti).getBytes();
-			for (byte b : tavu){
-				System.out.println("Tavu on "+b);
-			}
+//			for (byte b : tavu){
+//				System.out.println("Tavu on "+b);
+//			}
 			InetAddress omaIP=InetAddress.getLocalHost();
 			DatagramPacket paketti=new DatagramPacket(tavu, tavu.length, omaIP, yPortti);
 			udp.send(paketti);
@@ -147,7 +148,7 @@ public class SummausPalvelin extends Thread {
 		for(int i=0; i<t; i++){
 			summaTaulukko[i]=new Summalista();
 			ss[i]=new SummausSaie(summaTaulukko[i], 2001+i);
-			ss[i].start(); //Portit ovat 2001...2000+t
+			ss[i].start();
 		}		
 	}
 
@@ -177,6 +178,9 @@ public class SummausPalvelin extends Thread {
 	/*
 	 * Kuuntelee ja palauttaa TCP-yhteyden kautta saadun kokonaisluvun.
 	 * Jos aikarajan kuluessa ei tule kokonaislukua palautetaan -1.
+	 * 
+	 * @param aikaraja: aika millisekunteina, joka odotetaan kunnes lopetetaan
+	 * @return TCP-yhteyden kautta saatu kokonaisluku, tai -1 jos aikaraja ylittyi
 	 */
 	private int kuunteleLuku(int aikaraja) {
 		int luku=-1;

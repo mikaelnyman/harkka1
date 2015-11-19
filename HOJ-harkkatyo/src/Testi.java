@@ -6,7 +6,6 @@ public class Testi {
 				try {
 					WorkDistributor.main(new String[]{"verbose"});
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
