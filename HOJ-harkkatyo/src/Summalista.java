@@ -4,6 +4,7 @@ public class Summalista
 	//Tietokentät
 	private int summa = 0;
 	private int alkiot = 0;
+	private boolean onAktiivinen = true;
 	
 	/*
 	 * Konstruktori, joka luo uuden Summalista-olion.
@@ -35,7 +36,22 @@ public class Summalista
 		int[] Arvot = {this.summa,this.alkiot};
 		return Arvot;
 	}
-
+	
+    /*
+     * Metodi muuttaa onAktiivinen booleanin arvon arvoksi false.
+     */
+	public void setAktiivisuus()
+	{
+		onAktiivinen = false;
+	}
+	
+	/*
+	 * Metodi palauttaa onAktiivinen booleanin arvon.
+	 */
+	public boolean getAktiivisuus()
+	{
+		return onAktiivinen;
+	}
 }
 
 
