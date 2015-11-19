@@ -31,9 +31,15 @@ public class SummausSaie extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		int a=0;
 		while(true){
 			aktiivinen = luvut.getAktiivisuus();
-			int a=kuunteleLuku();
+			try{
+				a=kuunteleLuku();
+			}
+			catch (SocketException e){
+				aktiivinen=false;
+			}
 			if((a==0)||(!aktiivinen)){
 				try {
 					lukuVirta.close();
@@ -48,12 +54,12 @@ public class SummausSaie extends Thread {
 		}
 	}
 
-	private int kuunteleLuku() {
+	private int kuunteleLuku() throws SocketException {
 			try {
 				luku=(int)lukuVirta.readInt();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Säie sulkeutuu...");
+				throw new SocketException();
 			}
 		return luku;
 	}
