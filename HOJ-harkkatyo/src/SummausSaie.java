@@ -34,6 +34,13 @@ public class SummausSaie extends Thread {
 		while(true){
 			int a=kuunteleLuku();
 			if(a==0){
+				try {
+					lukuVirta.close();
+					lukuportti.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return;//lopeta säie
 			}
 			luvut.setUusiluku(a);
