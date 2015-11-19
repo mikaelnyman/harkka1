@@ -14,7 +14,7 @@ public class SummausSaie extends Thread {
 	private Socket lukuportti = null;
 	private ObjectInputStream lukuVirta = null;
 	private int luku;
-	
+	private boolean aktiivinen = true;
 	
 	public SummausSaie(Summalista lista, int portti) {
 		this.luvut=lista;
@@ -32,8 +32,9 @@ public class SummausSaie extends Thread {
 			e.printStackTrace();
 		}
 		while(true){
+			aktiivinen = luvut.getAktiivisuus();
 			int a=kuunteleLuku();
-			if(a==0){
+			if((a==0)||(!aktiivinen)){
 				try {
 					lukuVirta.close();
 					lukuportti.close();
