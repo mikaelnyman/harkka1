@@ -38,6 +38,7 @@ public class SummausPalvelin extends Thread {
 	/*
 	 * Koko palvelimen toiminnallinen runko
 	 */
+	@Override
 	public void run(){
 		int i=0;
 		leima1 : while (i<5){ //yritetään viisi kertaa
@@ -219,11 +220,9 @@ public class SummausPalvelin extends Thread {
 	 * Myös SummausSäikeet, jos niitä on vielä elossa
 	 */
 	private void lopetaKokoPaska() {
-		if (!(ss==null)){ 		//Mitä jos säikeet demoneita, jotka kuolisivat automaattisesti?
-			for (SummausSaie s : ss){
-				if (s.isAlive()){ 
-				// TODO sulje säie
-				}
+		if (!(ss==null)){
+			for (Summalista s : summaTaulukko){
+				s.setAktiivisuus();
 			}
 		}
 		try{
