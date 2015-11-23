@@ -8,17 +8,17 @@ public class SummausSaie extends Thread {
 	/*
 	 * Tietokentät
 	 */
-	//TODO soketit, ObjektInput(Output)Stream
 	private Summalista luvut;
 	private int portti;
-	private Socket lukuportti = null;
-	private ObjectInputStream lukuVirta = null;
+	private Socket lukuportti;
+	private ObjectInputStream lukuVirta;
 	private int luku;
-	private boolean aktiivinen = true;
+	private boolean aktiivinen;
 	
 	public SummausSaie(Summalista lista, int portti) {
-		this.luvut=lista;
-		this.portti=portti;
+		this.luvut = lista;
+		this.portti = portti;
+		 aktiivinen = true;
 	}
 
 	public void run(){
@@ -48,7 +48,7 @@ public class SummausSaie extends Thread {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return;//lopeta säie
+				return;	//lopeta säie
 			}
 			luvut.setUusiluku(a);
 		}
@@ -58,7 +58,7 @@ public class SummausSaie extends Thread {
 			try {
 				luku=(int)lukuVirta.readInt();
 			} catch (IOException e) {
-				System.out.println("Säie sulkeutuu...");
+//				System.out.println("Säie sulkeutuu...");
 				throw new SocketException();
 			}
 		return luku;
