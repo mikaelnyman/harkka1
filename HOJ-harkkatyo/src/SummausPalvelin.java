@@ -86,8 +86,10 @@ public class SummausPalvelin extends Thread {
 					int a=kuunteleLuku(60000); 	// Y:n kysely, aikaraja 1 min
 					if(a==1){					// Kokonaissumma
 						int b=0; 				// v‰lisuumma, johon lis‰t‰‰n jokaisen s‰ikeen summa
-						for(Summalista s : summaTaulukko){
-							b+=s.getSisalto()[0];
+						synchronized (summaTaulukko) {
+							for(Summalista s : summaTaulukko){
+								b+=s.getSisalto()[0];
+							}
 						}
 						lahetaLuku(b);
 					}
@@ -95,11 +97,13 @@ public class SummausPalvelin extends Thread {
 	//					System.out.println("Kysyt‰‰n s‰iett‰, jolla suurin summa.");
 	//					tulosta();
 						int c=0;
-						int b=summaTaulukko[0].getSisalto()[0];
-						for(int j=1; j<t; j++){
-							if(summaTaulukko[j].getSisalto()[0]>b){
-								b=summaTaulukko[j].getSisalto()[0];
-								c=j;
+						synchronized (summaTaulukko) {
+							int b=summaTaulukko[0].getSisalto()[0];
+							for(int j=1; j<t; j++){
+								if(summaTaulukko[j].getSisalto()[0]>b){
+									b=summaTaulukko[j].getSisalto()[0];
+									c=j;
+								}
 							}
 						}
 	//					System.out.println("S‰ie "+(c+1));
@@ -107,8 +111,10 @@ public class SummausPalvelin extends Thread {
 					}
 					else if(a==3){  // Kokonaism‰‰r‰
 						int b=0;
-						for(Summalista s : summaTaulukko){
-							b+=s.getSisalto()[1];
+						synchronized (asiakasSoketti) {
+							for(Summalista s : summaTaulukko){
+								b+=s.getSisalto()[1];
+							}
 						}
 						lahetaLuku(b);
 					}
