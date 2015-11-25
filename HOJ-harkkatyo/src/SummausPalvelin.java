@@ -76,7 +76,6 @@ public class SummausPalvelin extends Thread {
 					lopetaKokoPaska(); 		// Hallittu lopetus
 				}
 			}
-//			System.out.println("Palvelijoiden lukum‰‰r‰ "+t);
 			luoSummausPalvelijat();
 			for (int p=2001; p<2001+t; p++){ 	// Porttien l‰hetys Y:lle
 				lahetaLuku(p);
@@ -94,8 +93,6 @@ public class SummausPalvelin extends Thread {
 						lahetaLuku(b);
 					}
 					else if(a==2){  			// S‰ie, jolla suurin summa
-	//					System.out.println("Kysyt‰‰n s‰iett‰, jolla suurin summa.");
-	//					tulosta();
 						int c=0;
 						synchronized (summaTaulukko) {
 							int b=summaTaulukko[0].getSisalto()[0];
@@ -106,7 +103,6 @@ public class SummausPalvelin extends Thread {
 								}
 							}
 						}
-	//					System.out.println("S‰ie "+(c+1));
 						lahetaLuku(c+1); 		// Y:lle s‰ikeen indeksi+1
 					}
 					else if(a==3){  // Kokonaism‰‰r‰
@@ -130,7 +126,6 @@ public class SummausPalvelin extends Thread {
 				}
 			}
 		}
-		//Y ei vastannut, lopetus hallitusti
 		System.exit(-1);
 	}
 	
@@ -142,21 +137,15 @@ public class SummausPalvelin extends Thread {
 		try {
 			DatagramSocket udp=new DatagramSocket();
 			byte[] tavu=(""+ZPORTTI).getBytes();
-//			for (byte b : tavu){
-//				System.out.println("Tavu on "+b);
-//			}
 			InetAddress omaIP=InetAddress.getLocalHost();
 			DatagramPacket paketti=new DatagramPacket(tavu, tavu.length, omaIP, YPORTTI);
 			udp.send(paketti);
 			udp.close();
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -196,7 +185,6 @@ public class SummausPalvelin extends Thread {
 			throw new SocketException("Aikaraja meni jo");
 		}
 		catch (IOException e1) {
-			// TODO mit‰ tapahtuu
 			e1.printStackTrace();
 		}
 	}
@@ -218,8 +206,7 @@ public class SummausPalvelin extends Thread {
 		catch (SocketTimeoutException e1){ //Aika loppu
 			throw new SocketTimeoutException("Aika loppu");
 		}
-		catch (IOException e) { //Odottematon virhe, mit‰ tehd‰?
-			// TODO ratkaisu
+		catch (IOException e) { //Odottematon virhe
 			e.printStackTrace();
 			lopetaKokoPaska();
 		}
@@ -237,7 +224,6 @@ public class SummausPalvelin extends Thread {
 			oVirta.writeInt(luku);
 			oVirta.flush();
 		} catch (IOException e) {
-			// TODO Mik‰ on ongelma? Mik‰ ratkaisu?
 			e.printStackTrace();
 		}
 	}
@@ -257,18 +243,8 @@ public class SummausPalvelin extends Thread {
 			iVirta.close();
 			asiakasSoketti.close();
 		} catch (IOException e){
-			//TODO mit‰ tehd‰
+			e.printStackTrace();
 		}
 		System.exit(0);		
 	}
-	
-	/*
-	 * Tulostaa tilantaan
-	 */
-//	public void tulosta(){
-//		for (int i=0;i<t;i++){
-//			System.out.println("Summa: "+summaTaulukko[i].getSisalto()[0]);
-//			System.out.println("Lukum‰‰r‰: "+summaTaulukko[i].getSisalto()[1]);
-//		}
-//	}
 }
