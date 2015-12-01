@@ -11,7 +11,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 public class SummausPalvelin extends Thread {
-	/*
+	/**
 	 * Tietokent‰t
 	 */
 	// Portti, johon muodostetaan UDP. Annettu teht‰v‰nannossa.
@@ -31,7 +31,7 @@ public class SummausPalvelin extends Thread {
 	// Y:lt‰ saatava s‰ikeiden lukum‰‰r‰
 	private int t;
 	
-	/*
+	/**
 	 * Konstruktori
 	 */
 	public SummausPalvelin(){
@@ -39,7 +39,7 @@ public class SummausPalvelin extends Thread {
 		ZPORTTI=2000;
 	}
 	
-	/*
+	/**
 	 * Koko palvelimen toiminnallinen runko
 	 */
 	@Override
@@ -129,7 +129,7 @@ public class SummausPalvelin extends Thread {
 		System.exit(-1);
 	}
 	
-	/*
+	/**
 	 * Muodostaa UDP-yhteyden palvelimeen ja
 	 * antaa sille portin, johon palvelimen pit‰‰ ottaa TCP-yhteys
 	 */
@@ -151,7 +151,7 @@ public class SummausPalvelin extends Thread {
 		
 	}
 
-	/*
+	/**
 	 * Luo t kappaletta Summauspalvelijoita ja jokaista palvelijaa kohdin summalistan
 	 * Kaikkien summalista on yhteisen summalistataulukon alkio
 	 * Portit ovat 2001...2001+t
@@ -167,7 +167,7 @@ public class SummausPalvelin extends Thread {
 		}		
 	}
 
-	/*
+	/**
 	 * Muodostaa Socket-olion ja , jos tulee parametrina annettuun porttiin
 	 * TCP-yhteydenotto
 	 * @throws SocketEception jos viiden sekunnin aikana ei tule pyyntˆ‰
@@ -189,7 +189,7 @@ public class SummausPalvelin extends Thread {
 		}
 	}
 
-	/*
+	/**
 	 * Kuuntelee ja palauttaa TCP-yhteyden kautta saadun kokonaisluvun.
 	 * Jos aikarajan kuluessa ei tule kokonaislukua, heitet‰‰n poikkeus
 	 * 
@@ -214,7 +214,7 @@ public class SummausPalvelin extends Thread {
 	}
 
 
-	/*
+	/**
 	 * L‰hett‰‰ kokonaisluvun Y:lle.
 	 * K‰ytt‰‰ TCP-yhteytt‰
 	 * @param luku l‰hetett‰v‰ kokonaisluku
@@ -228,7 +228,7 @@ public class SummausPalvelin extends Thread {
 		}
 	}
 
-	/*
+	/**
 	 * Sulkee koko ohjelman.
 	 * Myˆs SummausS‰ikeet, jos niit‰ on viel‰ elossa
 	 */

@@ -6,7 +6,7 @@ public class Summalista
 	private int alkiot = 0;
 	private boolean onAktiivinen = true;
 	
-	/*
+	/**
 	 * Konstruktori, joka luo uuden Summalista-olion.
 	 */
 	public Summalista()
@@ -15,7 +15,7 @@ public class Summalista
 		this.alkiot = 0;
 	}
 	
-	/*
+	/**
 	 * Metodi lis‰‰ parametrina annetun int tyypin luvun
 	 * listassa olevaan summaan ja kasvattaa lis‰ttyjen
 	 * lukujen lukum‰‰r‰‰ yhdell‰.
@@ -26,7 +26,7 @@ public class Summalista
 		this.alkiot = alkiot+1;
 	}
 	
-	/*
+	/**
 	 * Metodi palauttaa listassa olevan summan ja sinne lis‰ttyjen lukujen
 	 * lukum‰‰r‰n int[]-taulukossa. Palautettavan listan ensimm‰inen alkio on
 	 * alkioiden summa ja toinen alkio on alkioiden lukum‰‰r‰.
@@ -37,7 +37,7 @@ public class Summalista
 		return Arvot;
 	}
 	
-    /*
+    /**
      * Metodi muuttaa onAktiivinen booleanin arvon arvoksi false.
      */
 	public void setAktiivisuus()
@@ -45,7 +45,7 @@ public class Summalista
 		onAktiivinen = false;
 	}
 	
-	/*
+	/**
 	 * Metodi palauttaa onAktiivinen booleanin arvon.
 	 */
 	public boolean getAktiivisuus()
